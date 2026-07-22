@@ -41,6 +41,7 @@ def ask(payload: QuestionRequest, request: Request) -> QuestionResponse:
             title=chunk["title"],
             page_numbers=chunk["page_numbers"],
             slide_url=to_slide_url(chunk["page_reference_path"]),
+            page_content=chunk["page_content"],
             cited=chunk["cited"],
             rerank_score=chunk["rerank_score"],
         )

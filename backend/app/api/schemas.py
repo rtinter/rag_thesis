@@ -11,6 +11,7 @@ class Source(BaseModel):
     title: str
     page_numbers: list[int]
     slide_url: str | None
+    page_content: str
     cited: bool
     rerank_score: float
 
