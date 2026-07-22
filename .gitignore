@@ -7,3 +7,6 @@ data/*
 logs/
 .ipynb_checkpoints/
 qdrant_storage/
+__pycache__/
+*.pyc
+.pytest_cache/
