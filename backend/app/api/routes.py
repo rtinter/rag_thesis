@@ -1,6 +1,4 @@
-from http.client import HTTPException
-
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 
 from app.api.schemas import QuestionRequest, QuestionResponse, Source
 from app.services.pipeline import answer

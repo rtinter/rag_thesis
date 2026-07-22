@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class QuestionRequest(BaseModel):
-    question: str
+    question: str = Field(min_length=3, max_length=3000)
 
 class Source(BaseModel):
     cite_nr: int
