@@ -1,0 +1,5 @@
+# Keep the build context small. uv.lock IS needed for the build, so don't ignore it.
+.venv/
+**/__pycache__/
+*.pyc
+.git/

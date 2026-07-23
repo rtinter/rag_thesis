@@ -1,4 +1,5 @@
 .env
+backend/.env
 .venv/
 .cache/
 .claude/
@@ -10,3 +11,4 @@ qdrant_storage/
 __pycache__/
 *.pyc
 .pytest_cache/
+*.stackdump

@@ -1,8 +1,11 @@
+import logging
 from dataclasses import dataclass
 from fastembed import SparseTextEmbedding
 from sentence_transformers import SentenceTransformer, CrossEncoder
 import torch
 from app.core.config import Settings
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Models:
@@ -26,11 +29,12 @@ def get_sparse_model(settings: Settings) -> SparseTextEmbedding:
 def get_reranker_model(settings: Settings, device: str) -> CrossEncoder:
     reranker = CrossEncoder(settings.rerank_model, device=device)
     if device == "cuda":
-        reranker.model.half() # fp16: only useful on NVIDIA GPUs - used in notebooks for evaulation with good speed
+        reranker.model.half() 
     return reranker
 
 def get_models(settings: Settings) -> Models:
     device = resolve_device()
+    logger.warning("Loading RAG models on device: %s", device)
     return Models(
         dense=get_dense_model(settings, device),
         sparse=get_sparse_model(settings),

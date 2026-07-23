@@ -2,14 +2,19 @@ import html
 
 import streamlit as st
 
-from api import build_slide_url
+from api import build_slide_url, get_slide
 from formatting import highlight_citations, normalize_math
 
 
+@st.cache_data(show_spinner=False)
+def load_and_cache_slide(url: str) -> bytes:
+    return get_slide(url)
+
+
 @st.dialog("Folienansicht", width="large")
-def enlarge_slide(url: str, title: str) -> None:
+def enlarge_slide(image: bytes, title: str) -> None:
     st.markdown(f"**{title}**")
-    st.image(url, width="stretch")
+    st.image(image, width="stretch")
 
 
 def render_chat() -> None:
@@ -93,9 +98,10 @@ def render_panel() -> None:
 
     url = build_slide_url(source)
     if url:
-        st.image(url, width="stretch")
+        image = load_and_cache_slide(url)
+        st.image(image, width="stretch")
         if st.button("⤢ Vergrößern", key="enlarge", width="stretch"):
-            enlarge_slide(url, source["title"])
+            enlarge_slide(image, source["title"])
     else:
         st.markdown(source["page_content"])
 
