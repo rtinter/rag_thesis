@@ -1,1 +1,2 @@
-# advanced_rag_thesis
+# RAG Thesis Application
+

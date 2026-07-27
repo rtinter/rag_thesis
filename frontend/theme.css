@@ -144,7 +144,7 @@ div[data-testid="stButton"]>button {
 
 
 div[data-testid="stChatInput"] {
-  max-width: 760px;
+  max-width: 39vw;
   margin: 0 auto;
   border: 1px solid #E2DDD0;
   border-radius: 14px;

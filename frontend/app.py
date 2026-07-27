@@ -35,7 +35,7 @@ st.markdown(
 
 question = st.chat_input("Stell mir eine Frage zu den Vorlesungsunterlagen ..")
 
-_space_left, chat_col, _space_right, panel_col = st.columns([3, 6, 3, 3.5], gap="small")
+_space_left, chat_col, _space_right, panel_col = st.columns([3, 6, 1, 5.5], gap="small")
 
 if question:
     st.session_state.messages.append({"role": "user", "content": question})
