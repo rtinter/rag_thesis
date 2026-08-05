@@ -24,13 +24,25 @@ def load_chunks_from_json(data_dir: Path) -> list[dict]:
             chunks.extend(data)
     return chunks
 
+def confirm_overwrite(collection_name: str, qdrant_client: QdrantClient) -> None:
+    if not qdrant_client.collection_exists(collection_name):
+        return
+    point_count = qdrant_client.count(collection_name=collection_name, exact=True).count
+    print(
+        f"Collection '{collection_name}' already exists and holds {point_count} points.\n"
+        "Ingesting deletes it and rebuilds it from scratch."
+    )
+    answer = input("Type 'yes' to overwrite, anything else aborts: ").strip().lower()
+    if answer != "yes":
+        raise SystemExit("Aborted. Collection left untouched.")
+
 def create_qdrant_collection(
-    embeddings: list, 
-    collection_name: str, 
+    embeddings: list,
+    collection_name: str,
     qdrant_client: QdrantClient
 ) -> None:
     if qdrant_client.collection_exists(collection_name):
-        print(f"Collection '{collection_name}' already exists. Recrating creation.")
+        print(f"Recreating collection '{collection_name}'.")
         qdrant_client.delete_collection(collection_name)
     qdrant_client.create_collection(
         collection_name=collection_name,
@@ -80,9 +92,11 @@ def build_qdrant_points(
 
 def main() -> None:
     settings = get_settings()
+    qdrant_client = get_qdrant(settings)
+    confirm_overwrite(settings.collection, qdrant_client)
+
     models = get_models(settings)
     chunks = load_chunks_from_json(data_dir)
-    qdrant_client = get_qdrant(settings)
     texts_to_embed = [combine_title_and_text(chunk) for chunk in chunks]
     
     dense_vectors = models.dense.encode(
@@ -95,7 +109,7 @@ def main() -> None:
     
     create_qdrant_collection(
         embeddings=dense_vectors, 
-        collection_name="lecture_chunks", 
+        collection_name=settings.collection ,
         qdrant_client=qdrant_client
     )
 
@@ -105,7 +119,7 @@ def main() -> None:
         sparse_vectors=sparse_vectors,
     )
     
-    qdrant_client.upsert(collection_name="lecture_chunks", points=points)
+    qdrant_client.upsert(collection_name=settings.collection, points=points)
 
 if __name__ == "__main__":
     main()
