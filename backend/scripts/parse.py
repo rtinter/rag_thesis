@@ -1,17 +1,3 @@
-"""Parse lecture PDFs into chunk JSONs.
-
-    data/raw/pdfs/<lecture>.pdf
-      -> data/reference_slides/<modul>/<lecture>/page_<n>.png
-      -> data/parsed/<modul>/<lecture>/<lecture>_chunks.json
-
-Existing images and chunks are skipped; --force rebuilds everything.
-
-Run from the backend/ directory:
-    uv run python -m scripts.parse           # every PDF in data/raw/pdfs
-    uv run python -m scripts.parse ML_5_svm  # a single one
-    uv run python -m scripts.parse --force   # ignore what is already there
-"""
-
 import argparse
 import base64
 import json
