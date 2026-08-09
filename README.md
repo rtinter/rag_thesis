@@ -418,7 +418,7 @@ docker compose up -d qdrant
 | [parsing_notebooks_test.ipynb](notebooks/parsing_notebooks_test.ipynb) | Iteratives Testen, wie Notebooks geparst werden sollten. |
 | **Parsing-Evaluation** ||
 | [evaluation_docling_vs_vlmonly.ipynb](notebooks/evaluation_docling_vs_vlmonly.ipynb) | Der Test beider Parsing-Varianten gegen den Goldstandard. Bewertet die Parsingqualität in einer Gegenüberstellung mittels String-Vergleich und LLM-as-a-Judge. |
-| [evaluation_full_parse.ipynb](notebooks/evaluation_full_parse.ipynb) | Evaluation des finalen Parses. Ergibt die Zahlen fürs Parsing-Kapitel. Listet zusätzlich alle nicht gefundenen Text-Nuggets auf, damit die Fehler nachvollziehbar sind. |
+| [evaluation_full_parse.ipynb](notebooks/evaluation_full_parse.ipynb) | Evaluation des finalen Parses. Ergibt die Zahlen fürs Parsing-Kapitel. |
 | [evaluation_reasoning_onoff.ipynb](notebooks/evaluation_reasoning_onoff.ipynb) | Parst die Vorlesungen mit Reasoning im VLM aus und an. Stellt den Recall den Kosten gegenüber (Latenz und Tokens pro Folie). Zeigt die Auswirkungen des Reasonings auf die Parsingqualität. |
 | [hallucination_check.ipynb](notebooks/hallucination_check.ipynb) | Nugget-Recall misst lediglich die Kontexttreue und keine Halluzinationen. In diesem Notebook erfolgt die manuelle Stichprobe. Die Folienbilder werden neben beiden Parse-Varianten dargestellt, um Halluzinationen zu suchen. |
 | **Ingestion** ||

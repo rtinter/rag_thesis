@@ -1,5 +1,5 @@
 def main():
-    print("Hello from advanced-rag-thesis!")
+    pass
 
 
 if __name__ == "__main__":

@@ -180,7 +180,7 @@ def main() -> None:
     modul = get_metadata("Which modul do these PDFs belong to?")
 
     client = OpenAI(base_url=settings.gateway_url, api_key=settings.bearer_token)
-    system_prompt = system_prompt_parsing()
+    system_prompt = system_prompt_parsing
     print(f"\nVLM: {settings.vl_model} | modul: {modul} | {len(pdfs)} PDF(s)\n")
 
     for pdf in pdfs:
