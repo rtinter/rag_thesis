@@ -429,3 +429,13 @@ docker compose up -d qdrant
 | [generation.ipynb](notebooks/generation.ipynb) | Die Inferenz. Kontext an `[n]`-Zitatmarker binden und iterativ den Output mit verschiedenen Systemprompts testen. Auflösen der Zitationsmarker implementieren. |
 | [evaluation_rag.ipynb](notebooks/evaluation_rag.ipynb) | Die vollständige Evaluation. Erst Retrieval-Qualität mittels MRR und recall@k je Strategie, dann Antwortqualität per LLM-Judge. |
 | [judge_validation.ipynb](notebooks/judge_validation.ipynb) | Validiert beide Judges gegen menschliches Urteil. Eigenständige Stichprobenbewertung, um die Judges zu validieren und ihre Aussagen belastbar zu machen. |
+
+### 3. Datenstand der Evaluation
+
+Die Evaluations-Notebooks lesen bewusst `data/parsed_NO_EDIT/` und nicht `data/parsed/`.
+`data/parsed/` ist die aktive Ausgabe der Parsing-Pipeline und wird bei jedem Lauf neu
+geschrieben. `data/parsed_NO_EDIT/` hingegen ist der eingefrorene Parse-Stand, auf dem sämtliche in
+der Thesis berichteten Kennzahlen erhoben wurden. Er bleibt unangetastet.
+
+Wer die Evaluation auf einem **eigenen** Parse wiederholen möchte, muss die Quellpfade in den
+Notebooks entsprechend anpassen. Betroffen ist jeweils die Konstante `PARSED` im Setup-Block.
