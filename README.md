@@ -21,19 +21,6 @@ Das System ist **hybrid** ausgelegt: ressourcenarme Komponenten
 werden lokal betrieben, die großen
 generativen Modelle werden über das Gateway der HAW-Kiel angesprochen.
 
-> ## Netzwerkzugang zwingend erforderlich
->
-> ⚠️ Das Gateway der HAW Kiel ist **ausschließlich aus dem Hochschulnetz erreichbar**. Der Rechner
-> muss also entweder
->
-> - **im Netz der HAW Kiel**, **oder**
-> - **über VPN mit der HAW Kiel verbunden** sein.
->
-> **Ohne diese Verbindung liefert die Applikation keine Antworten**  
-> Selbiges gilt für das Parsen
-> neuer Folien und für alle Notebooks, welche das LLM oder VLM 
-> aufrufen.
-
 | Komponente | Modell / Dienst | Ort |
 |---|---|---|
 | Dense-Embeddings | `BAAI/bge-m3` | lokal (GPU oder CPU) |
@@ -83,8 +70,9 @@ Intel i5-12600KF sowie auf einem **MacBook mit Apple-Silicon (M1)**.
 Dieser Abschnitt genügt vollständig, um das System zu starten. 
 
 **Voraussetzung:** Docker mit Compose sowie eine **Verbindung ins Netz der HAW Kiel — vor Ort
-oder per VPN** ([siehe oben](#netzwerkzugang-zwingend-erforderlich)). Python, uv und die Modelle
-werden automatisch in die Container geladen.
+oder per VPN**. Auf die **Reihenfolge** kommt es dabei an: erst ohne VPN bauen, dann verbinden
+([Details](#netzwerkzugang-für-die-verwendung-des-gateways-erforderlich)). Python, uv und die
+Modelle werden automatisch in die Container geladen.
 
 Der Prototyp kann nun mittels CPU verwendet werden. 
 Für die GPU-Variante (`docker-compose-gpu.yml`) kommt je nach
@@ -138,9 +126,17 @@ Der **erste Start dauert mehrere Minuten**: das Backend lädt Embedding- und Rer
 herunter (mehrere GB). Im Log erscheint `Loading RAG models on device: ...`. Ab dem zweiten
 Start entfällt dieser Download.
 
-> **Hinweis zum API-Key:** Die beigelegten `.env` Files enthalten einen funktionsfähigen Token für
-> das Gateway der HAW Kiel. Die Files bewusst **nicht** Teil des Git-Repositorys. Eine Weitergabe ist 
-> untersagt und der Token wird nach der Thesisbewertung deaktiviert.
+> ## Netzwerkzugang für die Verwendung des Gateways erforderlich
+>
+> Das Gateway der HAW Kiel ist **ausschließlich aus dem Hochschulnetz erreichbar**. Der Rechner
+> muss also entweder
+>
+> - **im Netz der HAW Kiel**, **oder**
+> - **über VPN mit der HAW Kiel verbunden** sein.
+>
+> ! **Der VPN blockiert das Herunterladen einiger Inhalte** und sollte
+> entsprechend erst nach dem erstmaligen Herunterladen der Images und 
+> Bibliotheken mittels docker compose up verwendet werden !
 
 Bei Problemen: [Troubleshooting](#troubleshooting). 
 
@@ -375,7 +371,25 @@ zeigt Letztere eingeklappt unter „Zusätzliches Material" an.
 
 **Frage wird gestellt, aber es kommt keine Antwort / Timeout beim Gateway**
 Der Rechner ist nicht im Netz der HAW Kiel. Campus-Netz oder VPN herstellen — das Gateway ist von
-außen nicht erreichbar ([siehe Netzwerkzugang](#netzwerkzugang-zwingend-erforderlich)).
+außen nicht erreichbar
+([siehe Netzwerkzugang](#netzwerkzugang-für-die-verwendung-des-gateways-erforderlich)).
+Typisches Bild: Frontend, Backend und Qdrant laufen normal, die Folienanzeige funktioniert, nur
+die Antwort des Sprachmodells bleibt aus.
+
+**Erster `docker compose up --build` hängt oder bricht beim Download ab**
+Das VPN der HAW Kiel blockiert einen Teil der externen Downloads. Images, Python-Pakete und die
+Embedding-/Reranker-Modelle müssen deshalb **ohne** aktives VPN geladen werden:
+
+```bash
+# VPN trennen, dann bauen und die Modelle einmalig herunterladen
+docker compose up --build
+```
+
+Ab dem zweiten Start liegen Images und Modelle lokal bzw. im `hf_cache`-Volume — dann ist das VPN
+nur noch für das Gateway nötig und stört nicht mehr.
+
+**Nach dem Verbinden mit dem VPN antwortet das System weiterhin nicht**
+Backend neu starten, damit die Verbindung neu aufgebaut wird: `docker compose restart backend`.
 
 **Frontend meldet „Das Backend ist gerade nicht erreichbar"**
 Backend lädt noch Modelle (erster Start) oder ist abgestürzt — `docker compose logs -f backend`.
