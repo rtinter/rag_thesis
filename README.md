@@ -19,7 +19,20 @@ Quellfolien können rechts neben dem Chat angezeigt werden.
 
 Das System ist **hybrid** ausgelegt: ressourcenarme Komponenten 
 werden lokal betrieben, die großen
-generativen Modelle werden über das Gateway der HAW-Kiel angesprochen. 
+generativen Modelle werden über das Gateway der HAW-Kiel angesprochen.
+
+> ## Netzwerkzugang zwingend erforderlich
+>
+> ⚠️ Das Gateway der HAW Kiel ist **ausschließlich aus dem Hochschulnetz erreichbar**. Der Rechner
+> muss also entweder
+>
+> - **im Netz der HAW Kiel**, **oder**
+> - **über VPN mit der HAW Kiel verbunden** sein.
+>
+> **Ohne diese Verbindung liefert die Applikation keine Antworten**  
+> Selbiges gilt für das Parsen
+> neuer Folien und für alle Notebooks, welche das LLM oder VLM 
+> aufrufen.
 
 | Komponente | Modell / Dienst | Ort |
 |---|---|---|
@@ -69,7 +82,9 @@ Intel i5-12600KF sowie auf einem **MacBook mit Apple-Silicon (M1)**.
 
 Dieser Abschnitt genügt vollständig, um das System zu starten. 
 
-**Voraussetzung:** Docker mit Compose. Python, uv und die Modelle werden automatisch in die Container geladen.
+**Voraussetzung:** Docker mit Compose sowie eine **Verbindung ins Netz der HAW Kiel — vor Ort
+oder per VPN** ([siehe oben](#netzwerkzugang-zwingend-erforderlich)). Python, uv und die Modelle
+werden automatisch in die Container geladen.
 
 Der Prototyp kann nun mittels CPU verwendet werden. 
 Für die GPU-Variante (`docker-compose-gpu.yml`) kommt je nach
@@ -357,6 +372,10 @@ zeigt Letztere eingeklappt unter „Zusätzliches Material" an.
 
 **Validierungsfehler zu `gateway_url` / `bearer_token` beim Start**
 `backend/.env` fehlt oder ist unvollständig.
+
+**Frage wird gestellt, aber es kommt keine Antwort / Timeout beim Gateway**
+Der Rechner ist nicht im Netz der HAW Kiel. Campus-Netz oder VPN herstellen — das Gateway ist von
+außen nicht erreichbar ([siehe Netzwerkzugang](#netzwerkzugang-zwingend-erforderlich)).
 
 **Frontend meldet „Das Backend ist gerade nicht erreichbar"**
 Backend lädt noch Modelle (erster Start) oder ist abgestürzt — `docker compose logs -f backend`.
