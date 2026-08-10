@@ -44,7 +44,7 @@ Intel i5-12600KF sowie auf einem **MacBook mit Apple-Silicon (M1)**.
 
 <br>
 
-> ## Welcher Setupfad ist der Richtige?
+> ## Welcher Setup-Pfad ist der Richtige?
 >
 > **Das Abgabe-Paket der Thesis ist vorhanden** (Vorlesungsdaten, Vektordatenbank-Speicher
 > und Gateway-API Key liegen bei)
@@ -90,7 +90,7 @@ rag_thesis_app/
 │   └-- .env                  <- liegt bei (Gateway-URL und API-Key bereits eingetragen)
 |-- data/                     
 |   ├-- parsed_clean/         <- liegt bei (Parsingergebnisse in Json-Format)
-|   ├-- parsed_NO_EDIT/       <- liegt bei (unkorrigierte Parsing-Ausgabe, Quelle der Notebooks)
+|   ├-- parsed_NO_EDIT/       <- liegt bei (Eingefrorener erster Parse und Ausgangspunkt der Experimente)
 |   ├-- eval/                 <- liegt bei (Referenz- und Ergebnisdaten der Evaluation)
 │   └-- reference_slides/     <- liegt bei (Einzelne Folienbilder in PNG-Format)
 |-- qdrant_storage/           <- liegt bei (Indexierte Chunks für Vorlesungsfolien und Notebooks)
@@ -123,9 +123,9 @@ Der **erste Start dauert mehrere Minuten**: das Backend lädt Embedding- und Rer
 herunter (mehrere GB). Im Log erscheint `Loading RAG models on device: ...`. Ab dem zweiten
 Start entfällt dieser Download.
 
-> **Hinweis zum API-Key:** Die beigelegte `backend/.env` enthält einen funktionsfähigen Token für
-> das Gateway der HAW Kiel. Sie ist bewusst **nicht** Teil des Git-Repositorys. Eine Weitergabe ist 
-> untersagt und der Token wird nach der Bewertung der Thesis deaktiviert.
+> **Hinweis zum API-Key:** Die beigelegten `.env` Files enthalten einen funktionsfähigen Token für
+> das Gateway der HAW Kiel. Die Files bewusst **nicht** Teil des Git-Repositorys. Eine Weitergabe ist 
+> untersagt und der Token wird nach der Thesisbewertung deaktiviert.
 
 Bei Problemen: [Troubleshooting](#troubleshooting). 
 
@@ -172,7 +172,7 @@ rag_thesis_app/
 
 ### 2. Wissensbasis herstellen
 
-Ausgangspunkt sind PDFs. Sie werden Seite für Seite als PNG gerendert, in `data/reference_slides` persisiert vom VLM in strukturierte
+Ausgangspunkt sind PDFs. Sie werden Seite für Seite als PNG gerendert, in `data/reference_slides` persistiert und vom VLM in strukturierte
 Chunks übersetzt.
 Ziel des Blocks: **Qdrant läuft und die Collection `lecture_chunks` ist befüllt.**
 
@@ -216,13 +216,13 @@ data/parsed/<modul>/<vorlesung>/<vorlesung>_chunks.json
 
 Der Lauf ist unterbrechbar: bereits gerenderte PNGs und bereits geparste Folien werden beim
 nächsten Start übersprungen, die JSON wird nach jeder Folie fortgeschrieben. Der Parse benötigt,
-je nach PDF größe einige Zeit. Pro Folie geht ein VLM-Aufruf ans Gateway.
+je nach PDF-Größe, einige Zeit. Pro Folie geht ein VLM-Aufruf ans Gateway.
 
 **2.3 — Chunks nach `parsed_clean/` übernehmen**
 
 Der Parser schreibt nach `data/parsed/`, der Ingest liest aber `data/parsed_clean/`
 ([ingest.py:14](backend/scripts/ingest.py#L14)). Der Zwischenschritt ist bewusst manuell: 
-Die vom VLM errstellten Artefakte können gesichtet und korrigiert werden bevor sie in 
+Die vom VLM erstellten Artefakte können gesichtet und korrigiert werden, bevor sie in 
 die Wissensbasis übernommen werden. Anschließend kann entweder der Ordnername `data/parsed/` zu `data/parsed_clean` geändert, oder folgender Befehl verwendet werden:
 
 ```bash
@@ -269,7 +269,7 @@ Danach:
 - Vektordatenbank UI: <http://localhost:6333/dashboard> 
 
 Der **erste Start des Backends dauert lange**: der Container lädt die Embedding- und Reranker-
-Modelle in das `hf_cache`-Volume herunter (mehrere GB). Im Log siehst du `Loading RAG models on device: ...`. Ab dem zweiten Start ist das Volume gefüllt und der start schnell.
+Modelle in das `hf_cache`-Volume herunter (mehrere GB). Im Log siehst du `Loading RAG models on device: ...`. Ab dem zweiten Start ist das Volume gefüllt und der Start schnell.
 
 #### Variante 2 — ohne Docker
 
@@ -413,7 +413,7 @@ docker compose up -d qdrant
 | **Parsing** ||
 | [parse.ipynb](notebooks/parse.ipynb) | Vollständiger Parse über den gesamten Korpus. Reproduzierbarer Testlauf eines gesamten Parses inklusiver der Latenz und des Tokenverbrauchs als Kostenbeleg. |
 | [parsing_vlm_first_test.ipynb](notebooks/parsing_vlm_first_test.ipynb) | Vorexperiment reines VLM-Parsing. Das Folienbild wird **ohne** Ankertext direkt an das VLM gereicht. Parst eine Testvorlesung und zeigt Folie neben Parseartefakt zur Sichtprüfung. |
-| [parsing_with_docling_test.ipynb](notebooks/parsing_with_docling_test.ipynb) | Vorexperiment mit Docling. Erzeugt pro Seite einen Anker-Markdown, welcher zusammen mit dem Bild ans VLM geht. Beide Notebooks liefern das Material, welches `evaluation_docling_vs_vlmonly` gegeneinander stellt. |
+| [parsing_with_docling_test.ipynb](notebooks/parsing_with_docling_test.ipynb) | Vorexperiment mit Docling. Erzeugt pro Seite einen Anker-Markdown, welcher zusammen mit dem Bild an das VLM gesendet wird. |
 | [parsing_docling_isolated_test.ipynb](notebooks/parsing_docling_isolated_test.ipynb) | Docling allein, ohne VLM. Eine Seite neben Docling-Markdown, dazu die Visualisierung der erkannten Bounding-Boxes als Bild. Erstellt, um zu evaluieren, was Docling extrahiert und wo Fehler entstehen. |
 | [parsing_notebooks_test.ipynb](notebooks/parsing_notebooks_test.ipynb) | Iteratives Testen, wie Notebooks geparst werden sollten. |
 | **Parsing-Evaluation** ||
